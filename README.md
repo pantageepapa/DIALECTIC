@@ -4,6 +4,8 @@
 
 📄 *Accepted at EACL 2026 Industry Track* — [Read the Paper](./paper.pdf)
 
+Paper[paper.pdf]
+
 ## Overview
 
 DIALECTIC is an LLM-based multi-agent system that helps venture capital investors evaluate startup investment opportunities. The system addresses a critical challenge: investors face an overwhelming number of opportunities but can only invest in a small fraction.
