@@ -2,7 +2,7 @@
 
 **LLM-Based Multi-Agent System for Startup Evaluation**
 
-📄 *Accepted at EACL 2026 Industry Track*
+📄 *Accepted at EACL 2026 Industry Track* — [Read the Paper](./paper.pdf)
 
 ## Overview
 
