@@ -1,3 +1,6 @@
+# macOS
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -164,6 +167,7 @@ cython_debug/
 
 # Cache files
 .cache/
+!src/agent/.cache/
 .claude/
 .cursor/
 
