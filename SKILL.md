@@ -162,7 +162,9 @@ The command outputs JSON to stdout. Capture it.
 
 ## Step 4: Present Results
 
-Present results in summary format:
+**Formatting each argument:** Extract a short bold headline (5–10 words capturing the core claim) from the argument text, then show the full `content` beneath it. Sort by score descending. Show top 3 pro and top 3 contra from `final_arguments`.
+
+Present results in this format:
 
 ```
 ## DIALECTIC Analysis: [Company Name]
@@ -170,22 +172,32 @@ Present results in summary format:
 ### Investment Arguments
 
 **PRO** (reasons to invest)
-1. [score/10] [refined_content or content of top pro argument]
-2. [score/10] [second pro argument]
-3. [score/10] [third pro argument]
+
+1. [score/10] **[Bold 5–10 word headline]**
+   [Full argument text — refined_content if non-null, otherwise content]
+
+2. [score/10] **[Bold headline]**
+   [Full argument text]
+
+3. [score/10] **[Bold headline]**
+   [Full argument text]
 
 **CON** (reasons to pass)
-1. [score/10] [refined_content or content of top contra argument]
-2. [score/10] [second contra argument]
-3. [score/10] [third contra argument]
+
+1. [score/10] **[Bold 5–10 word headline]**
+   [Full argument text]
+
+2. [score/10] **[Bold headline]**
+   [Full argument text]
+
+3. [score/10] **[Bold headline]**
+   [Full argument text]
 
 ### Recommendation
 **[INVEST / PASS]**
 
-[Write a 2-3 sentence synthesis based on the balance of arguments, their scores, and the final_decision field. Be direct and specific to this startup.]
+[Write 2-3 sentences synthesising the argument balance, scores, and final_decision. Be direct and specific to this startup.]
 ```
-
-Sort arguments by score descending. Use `refined_content` if non-null, otherwise `content`. Show top 3 of each type.
 
 ## Step 5: Error Handling
 
