@@ -29,8 +29,13 @@ echo "  ✓ Dependencies installed"
 # 3. Create .env if it doesn't exist
 echo ""
 if [ ! -f "$SKILL_DIR/.env" ]; then
-  cp "$SKILL_DIR/.env.example" "$SKILL_DIR/.env"
-  echo "→ Created .env from .env.example"
+  if [ -f "$SKILL_DIR/.env.example" ]; then
+    cp "$SKILL_DIR/.env.example" "$SKILL_DIR/.env"
+    echo "→ Created .env from .env.example"
+  else
+    touch "$SKILL_DIR/.env"
+    echo "→ Created empty .env"
+  fi
 else
   echo "✓ .env already exists (skipping)"
 fi
