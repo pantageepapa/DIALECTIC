@@ -82,6 +82,14 @@ src/agent/
 
 > **Note:** `SKILL.md` at the repo root is the Claude Code skill definition. When the repo is cloned to `~/.claude/skills/dialectic/`, Claude Code automatically registers `/dialectic` as a global slash command.
 
+## Uninstall
+
+```bash
+~/.claude/skills/dialectic/uninstall
+```
+
+This removes the skill directory and deregisters `/dialectic` from Claude Code.
+
 ## Advanced: LangGraph Studio
 
 For development, graph visualization, and debugging individual pipeline stages:

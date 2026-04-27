@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+INSTALL_DIR="$HOME/.claude/skills/dialectic"
+
+echo ""
+echo "========================================"
+echo "  DIALECTIC Uninstall"
+echo "========================================"
+echo ""
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  echo "✓ Nothing to uninstall ($INSTALL_DIR not found)"
+  echo ""
+  exit 0
+fi
+
+echo "This will remove: $INSTALL_DIR"
+echo ""
+read -r -p "Are you sure? (y/N) " confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Aborted."
+  exit 0
+fi
+
+echo ""
+echo "→ Removing $INSTALL_DIR..."
+rm -rf "$INSTALL_DIR"
+echo "  ✓ Removed"
+
+echo ""
+echo "========================================"
+echo "  Uninstall complete."
+echo "========================================"
+echo ""
+echo "/dialectic is no longer available in Claude Code."
+echo ""
