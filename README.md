@@ -17,40 +17,50 @@ The pipeline works through four key stages:
 
 The output includes natural-language arguments with numeric scores, enabling efficient opportunity ranking.
 
-## Quick Start
+## Install
 
-### 1. Install Dependencies
+DIALECTIC ships as a [Claude Code](https://claude.ai/code) skill. Once installed, type `/dialectic` in any Claude Code session to analyze a startup.
 
-```bash
-pip install -e . "langgraph-cli[inmem]"
-```
-
-### 2. Set Up Environment
-
-```bash
-cp .env.example .env
-```
-
-Add your API keys to `.env`:
+**Open Claude Code and paste this prompt:**
 
 ```
-OPENAI_API_KEY=your_openai_api_key_here
-PPLX_API_KEY=your_perplexity_api_key_here
-LANGSMITH_API_KEY=your_langsmith_api_key_here  # Optional, for tracing
+run git clone --single-branch --depth 1 https://github.com/pantageepapa/DIALECTIC.git ~/.claude/skills/dialectic && cd ~/.claude/skills/dialectic && ./setup
 ```
 
-### 3. Run with LangGraph Studio
+Claude will clone the repo, install dependencies, and walk you through the rest.
 
-```bash
-langgraph dev
+### API Keys
+
+After setup, add your keys to `~/.claude/skills/dialectic/.env`:
+
+| Key | Required | Where to get it |
+|-----|----------|-----------------|
+| `OPENAI_API_KEY` | Yes | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) |
+| `PPLX_API_KEY` | Yes (or Brave) | [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api) |
+| `BRAVE_SEARCH_API_KEY` | Yes (or Perplexity) | [brave.com/search/api](https://brave.com/search/api/) |
+| `LANGSMITH_API_KEY` | No | Optional tracing |
+
+## Usage
+
+Open Claude Code in any project and type:
+
+```
+/dialectic
 ```
 
-This opens LangGraph Studio where you can run the pipeline interactively, visualize the graph, and debug individual stages.
+Claude will ask for the startup's name, what it does, industry, and any additional context. Then it runs the full analysis pipeline and presents:
+
+- **Pro arguments** — reasons to invest, with scores
+- **Con arguments** — reasons to pass, with scores
+- **Investment recommendation** — invest or pass, with synthesis
+
+Choose between a clean **summary** (recommended) or the full **detailed** view showing iteration history, critiques, and refinements.
 
 ## Project Structure
 
 ```
 src/agent/
+├── cli.py                    # CLI entry point for the /dialectic skill
 ├── pipeline/
 │   ├── graph.py              # Main LangGraph definition
 │   ├── stages/               # Pipeline stages
@@ -70,7 +80,32 @@ src/agent/
 └── web_search/               # Web search providers
 ```
 
-The main entry point is `pipeline/graph.py`, which orchestrates all stages using LangGraph. Each stage is modular and can be tested independently.
+> **Note:** `SKILL.md` at the repo root is the Claude Code skill definition. When the repo is cloned to `~/.claude/skills/dialectic/`, Claude Code automatically registers `/dialectic` as a global slash command.
+
+## Advanced: LangGraph Studio
+
+For development, graph visualization, and debugging individual pipeline stages:
+
+### 1. Install Dependencies
+
+```bash
+pip install -e . "langgraph-cli[inmem]"
+```
+
+### 2. Set Up Environment
+
+```bash
+cp .env.example .env
+# Add your API keys
+```
+
+### 3. Run with LangGraph Studio
+
+```bash
+langgraph dev
+```
+
+This opens LangGraph Studio where you can run the pipeline interactively, visualize the graph, and inspect state at each node.
 
 ## Citation
 

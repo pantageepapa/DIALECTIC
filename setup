@@ -1,0 +1,54 @@
+#!/bin/bash
+set -e
+
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo ""
+echo "========================================"
+echo "  DIALECTIC Setup"
+echo "========================================"
+echo ""
+
+# 1. Install uv if missing
+if ! command -v uv &>/dev/null; then
+  echo "→ Installing uv (Python package manager)..."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  export PATH="$HOME/.local/bin:$PATH"
+  echo "  ✓ uv installed"
+else
+  echo "✓ uv found: $(uv --version)"
+fi
+
+# 2. Install Python dependencies
+echo ""
+echo "→ Installing Python dependencies..."
+cd "$SKILL_DIR"
+uv sync --quiet
+echo "  ✓ Dependencies installed"
+
+# 3. Create .env if it doesn't exist
+echo ""
+if [ ! -f "$SKILL_DIR/.env" ]; then
+  cp "$SKILL_DIR/.env.example" "$SKILL_DIR/.env"
+  echo "→ Created .env from .env.example"
+else
+  echo "✓ .env already exists (skipping)"
+fi
+
+# 4. Done
+echo ""
+echo "========================================"
+echo "  Setup complete!"
+echo "========================================"
+echo ""
+echo "Before using /dialectic, add your API keys to:"
+echo "  $SKILL_DIR/.env"
+echo ""
+echo "Required keys:"
+echo "  OPENAI_API_KEY    → https://platform.openai.com/api-keys"
+echo "  PPLX_API_KEY      → https://www.perplexity.ai/settings/api"
+echo "    (or BRAVE_API_KEY → https://brave.com/search/api/)"
+echo ""
+echo "Then open Claude Code and type:"
+echo "  /dialectic"
+echo ""
