@@ -143,9 +143,9 @@ Proceed to Step 3 without any team data. Omit the `--extra` flag when running th
 
 Warn the user first:
 
-> "This analysis takes up to 20 minutes to complete. The pipeline will decompose investment questions, search the web for information, generate pro/contra arguments, apply devil's advocate critiques, and refine the best arguments over 2 iterations. Starting now..."
+> "This analysis takes up to 10 minutes to complete. The pipeline will decompose investment questions, search the web for information, generate pro/contra arguments, apply devil's advocate critiques, and refine the best arguments over 2 iterations. Starting now..."
 
-Then run the pipeline using the Bash tool with a **20-minute timeout**. Use `SKILL_BASE_DIR` from your invocation context directly — do not search the filesystem:
+Then run the pipeline using the Bash tool with a **10-minute timeout**. Use `SKILL_BASE_DIR` from your invocation context directly — do not search the filesystem:
 
 ```bash
 cd "[SKILL_BASE_DIR]" && uv run python -m agent.cli \
@@ -173,30 +173,30 @@ Present results in this format:
 
 **PRO** (reasons to invest)
 
-1. [score/10] **[Bold 5–10 word headline]**
+1. [score/100] **[Bold 5–10 word headline]**
    [Full argument text — refined_content if non-null, otherwise content]
 
-2. [score/10] **[Bold headline]**
+2. [score/100] **[Bold headline]**
    [Full argument text]
 
-3. [score/10] **[Bold headline]**
+3. [score/100] **[Bold headline]**
    [Full argument text]
 
 **CON** (reasons to pass)
 
-1. [score/10] **[Bold 5–10 word headline]**
+1. [score/100] **[Bold 5–10 word headline]**
    [Full argument text]
 
-2. [score/10] **[Bold headline]**
+2. [score/100] **[Bold headline]**
    [Full argument text]
 
-3. [score/10] **[Bold headline]**
+3. [score/100] **[Bold headline]**
    [Full argument text]
 
 ### Recommendation
 **[INVEST / PASS]**
 
-[Write 2-3 sentences synthesising the argument balance, scores, and final_decision. Be direct and specific to this startup.]
+[One sentence stating the decision and citing the single strongest argument verbatim or closely paraphrased. Do not argue against it or qualify it — just state it as the deciding factor.]
 ```
 
 ## Step 5: Error Handling
