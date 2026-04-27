@@ -70,13 +70,13 @@ Read the image using your vision capability and extract the following fields int
 - **name** — full name from the profile header
 - **city** — city of residence if shown
 - **country_code** — two-letter country code if location is shown (e.g. "US", "DE")
-- **about** — the bio/summary section text
+- **about** — the bio/summary section text if shown; if not shown, infer a 1-2 sentence summary from the headline, job titles, and experience visible in the screenshot
 - **education** — list of entries, each with: institution name, start year, end year (mark as "not visible" if section not shown)
 - **experience** — list of entries, each with: company, title, date range, description (mark as "not visible" if section not shown)
 - **followers** — follower count if visible
 - **connections** — connection count if visible
 
-Mark any field not visible in the screenshot as absent rather than guessing.
+Mark fields not visible and not inferable as absent. Always infer **about** from available context rather than leaving it blank.
 
 **Display a confirmation card for each person:**
 
@@ -139,25 +139,13 @@ Format each response as a Person summary (same structure as above, filling in wh
 
 Proceed to Step 3 without any team data. Omit the `--extra` flag when running the pipeline.
 
-## Step 3: Ask for Output Verbosity
-
-Ask:
-
-> "How would you like the results presented?
-> 1. **Summary** (recommended) — Top arguments + investment recommendation
-> 2. **Detailed** — Full iteration history with critiques and refinements
->
-> Enter 1 or 2:"
-
-Store their choice.
-
-## Step 4: Run the Analysis
+## Step 3: Run the Analysis
 
 Warn the user first:
 
-> "This analysis takes 2–5 minutes to complete. The pipeline will decompose investment questions, search the web for information, generate pro/contra arguments, apply devil's advocate critiques, and refine the best arguments over 2 iterations. Starting now..."
+> "This analysis takes up to 20 minutes to complete. The pipeline will decompose investment questions, search the web for information, generate pro/contra arguments, apply devil's advocate critiques, and refine the best arguments over 2 iterations. Starting now..."
 
-Then run the pipeline using the Bash tool. Use `SKILL_BASE_DIR` from your invocation context directly — do not search the filesystem:
+Then run the pipeline using the Bash tool with a **20-minute timeout**. Use `SKILL_BASE_DIR` from your invocation context directly — do not search the filesystem:
 
 ```bash
 cd "[SKILL_BASE_DIR]" && uv run python -m agent.cli \
@@ -172,13 +160,9 @@ Omit `--website` if the user didn't provide a URL. Omit `--extra` if the user sk
 
 The command outputs JSON to stdout. Capture it.
 
-## Step 5: Present Results
+## Step 4: Present Results
 
-Parse the JSON output and present results based on the user's verbosity choice.
-
-### If Summary (choice 1):
-
-Present in this format:
+Present results in summary format:
 
 ```
 ## DIALECTIC Analysis: [Company Name]
@@ -203,23 +187,7 @@ Present in this format:
 
 Sort arguments by score descending. Use `refined_content` if non-null, otherwise `content`. Show top 3 of each type.
 
-### If Detailed (choice 2):
-
-Show everything above, then add:
-
-```
-### Full Iteration History
-
-**Iteration [N]:**
-- **[PRO/CON]** Original: [content]
-  - Critique: [critique]
-  - Refined: [refined_content]
-  - Score: [score]/10
-```
-
-Show all arguments from `arguments_history`, preserving iteration grouping.
-
-## Step 6: Error Handling
+## Step 5: Error Handling
 
 If the Bash command exits with a non-zero status or outputs an error:
 
