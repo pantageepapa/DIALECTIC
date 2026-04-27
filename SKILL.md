@@ -45,7 +45,9 @@ Warn the user first:
 Then run the pipeline using the Bash tool:
 
 ```bash
-cd ~/.claude/skills/dialectic && uv run python -m agent.cli \
+DIALECTIC_DIR=$(find "$HOME/.claude" -name "cli.py" -path "*/agent/cli.py" 2>/dev/null | head -1 | sed 's|/src/agent/cli.py||') && \
+[ -z "$DIALECTIC_DIR" ] && DIALECTIC_DIR="$(pwd)" && \
+cd "$DIALECTIC_DIR" && uv run python -m agent.cli \
   --name "[STARTUP NAME]" \
   --about "[WHAT IT DOES]" \
   --industry "[INDUSTRY]" \
@@ -110,7 +112,7 @@ If the Bash command exits with a non-zero status or outputs an error:
 
 1. Show the error message clearly
 2. Check if it mentions a missing API key — if so, say:
-   > "It looks like an API key is missing. Open `~/.claude/skills/dialectic/.env` and add:
+   > "It looks like an API key is missing. Open the `.env` file in your DIALECTIC install directory and add:
    > - `OPENAI_API_KEY` — from platform.openai.com
    > - `PPLX_API_KEY` — from perplexity.ai (or `BRAVE_API_KEY` from brave.com/search/api)"
 3. Otherwise, show the raw error and suggest re-running.
