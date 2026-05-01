@@ -104,11 +104,30 @@ async def score_and_select_best_k(
     arguments_to_score = state.current_arguments
     scored_arguments = await score_arguments_in_parallel(arguments_to_score)
 
-    # Sort and select top K for current iteration
+    # Sort and select top K for current iteration — split evenly between pro
+    # and contra so the dialectic always carries both sides forward. With odd
+    # K, give the extra slot to whichever side has the higher single best score.
     k_best = state.get_current_k_best()
-    top_arguments = sorted(scored_arguments, key=lambda x: x.score, reverse=True)[
-        :k_best
-    ]
+    pros = sorted(
+        [a for a in scored_arguments if a.argument_type == "pro"],
+        key=lambda x: x.score,
+        reverse=True,
+    )
+    contras = sorted(
+        [a for a in scored_arguments if a.argument_type == "contra"],
+        key=lambda x: x.score,
+        reverse=True,
+    )
+    k_pro = k_best // 2
+    k_contra = k_best // 2
+    if k_best % 2 == 1:
+        pro_top = pros[0].score if pros else -1
+        contra_top = contras[0].score if contras else -1
+        if pro_top >= contra_top:
+            k_pro += 1
+        else:
+            k_contra += 1
+    top_arguments = pros[:k_pro] + contras[:k_contra]
 
     return {
         "current_arguments": scored_arguments,

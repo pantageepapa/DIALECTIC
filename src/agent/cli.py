@@ -71,7 +71,7 @@ async def run(args: argparse.Namespace) -> dict:
         config=Config(
             n_pro_arguments=3,
             n_contra_arguments=3,
-            k_best_arguments_per_iteration=[1, 1],
+            k_best_arguments_per_iteration=[5, 3],
             max_iterations=2,
         ),
     )
@@ -109,11 +109,28 @@ async def run(args: argparse.Namespace) -> dict:
             for arg in selected
         ])
 
+    def _node_to_dict(node) -> dict:
+        return {
+            "question": node.question,
+            "answer": node.answer,
+            "aspect": node.aspect,
+            "sub_nodes": [_node_to_dict(child) for child in node.sub_nodes],
+        }
+
+    question_trees_out = {}
+    for aspect, tree in (final_state.get("question_trees") or {}).items():
+        question_trees_out[aspect] = {
+            "aspect": tree.aspect,
+            "root": _node_to_dict(tree.root_node),
+        }
+
     return {
         "company": args.name,
         "final_decision": final_state.get("final_decision", "undetermined"),
         "final_arguments": final_arguments,
         "arguments_history": history,
+        "question_trees": question_trees_out,
+        "all_qa_pairs": final_state.get("all_qa_pairs") or [],
         "iterations_completed": final_state.get("current_iteration", 0),
     }
 
