@@ -22,6 +22,14 @@ from agent.pipeline.stages.decomposition import graph as decomposition_graph
 from agent.pipeline.state.decomposition import DecompositionInput
 from agent.pipeline.state.investment_story import IterativeInvestmentStoryState
 
+# 'internal' aspect uses a private/local provider module that is not
+# committed to this repo. If the module is not present (or its provider
+# is not configured), the 'internal' aspect is silently skipped.
+try:
+    from agent.pipeline.stages import internal_data  # type: ignore
+except ImportError:  # pragma: no cover - module is optional/local-only
+    internal_data = None
+
 
 async def _decompose_single_question(
     question: str,
@@ -95,9 +103,22 @@ async def decompose_all_questions(
     if state.company is None:
         raise ValueError("Company is required for decomposition")
 
-    # Create tasks for all 4 questions
+    # Create tasks for all questions. The 'internal' aspect uses a static
+    # hand-coded tree (no LLM decomposition needed); the other 4 aspects
+    # decompose dynamically.
     tasks = []
+    static_results: list[Dict[str, QuestionTree | str]] = []
     for aspect, question in INVESTMENT_QUESTIONS.items():
+        if aspect == "internal":
+            if internal_data is not None and internal_data.is_enabled():
+                static_results.append(
+                    {
+                        "aspect": aspect,
+                        "tree": internal_data.build_internal_question_tree(),
+                    }
+                )
+            # If internal data is unavailable, silently skip — pipeline still runs the other 4.
+            continue
         task = asyncio.create_task(
             _get_or_decompose_question(
                 question=question,
@@ -109,11 +130,11 @@ async def decompose_all_questions(
         tasks.append(task)
 
     # Execute all decompositions in parallel
-    results = await asyncio.gather(*tasks)
+    dynamic_results = await asyncio.gather(*tasks) if tasks else []
 
     # Build the question_trees dict
     question_trees: Dict[str, QuestionTree] = {}
-    for result in results:
+    for result in [*dynamic_results, *static_results]:
         question_trees[result["aspect"]] = result["tree"]
 
     return {"question_trees": question_trees}
