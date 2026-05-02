@@ -21,6 +21,13 @@ from agent.pipeline.stages.cache import cache_answered_tree, get_cached_answered
 from agent.pipeline.stages.constants import QuestionAspect
 from agent.pipeline.state.investment_story import IterativeInvestmentStoryState
 
+# 'internal' aspect uses a private/local provider module — see notes in
+# parallel_decomposition.py.
+try:
+    from agent.pipeline.stages import internal_data  # type: ignore
+except ImportError:  # pragma: no cover - module is optional/local-only
+    internal_data = None
+
 
 async def _answer_single_tree(
     aspect: str,
@@ -112,9 +119,17 @@ async def answer_all_trees(
     if state.company is None:
         raise ValueError("Company is required for answering")
 
-    # Create tasks for answering all trees in parallel (with caching)
+    # Create tasks for answering all trees in parallel (with caching). The
+    # 'internal' aspect runs synchronous Mongo lookups instead of going
+    # through the LLM/web-search answering graph.
     tasks = []
+    static_results: List[Dict] = []
     for aspect, tree in state.question_trees.items():
+        if aspect == "internal":
+            if internal_data is not None:
+                answered = internal_data.answer_internal_tree(tree, state.company)
+                static_results.append({"aspect": aspect, "tree": answered})
+            continue
         task = asyncio.create_task(
             _get_or_answer_tree(
                 aspect=aspect,
@@ -127,7 +142,8 @@ async def answer_all_trees(
         tasks.append(task)
 
     # Execute all answering in parallel
-    results = await asyncio.gather(*tasks)
+    dynamic_results = await asyncio.gather(*tasks) if tasks else []
+    results = [*dynamic_results, *static_results]
 
     # Build the updated question_trees dict and collect all Q&A pairs
     question_trees: Dict[str, QuestionTree] = {}

@@ -172,3 +172,6 @@ cython_debug/
 .cursor/
 
 CLAUDE.md
+# Private/local provider for the internal question tree — contains
+# org-specific CRM schema and is never committed to this repo.
+src/agent/pipeline/stages/internal_data.py
