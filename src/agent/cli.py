@@ -71,7 +71,7 @@ async def run(args: argparse.Namespace) -> dict:
         config=Config(
             n_pro_arguments=3,
             n_contra_arguments=3,
-            k_best_arguments_per_iteration=[5, 3],
+            k_best_arguments_per_iteration=[5, 4],
             max_iterations=2,
         ),
     )
