@@ -208,8 +208,8 @@ async def main() -> None:
             config=Config(
                 n_pro_arguments=3,
                 n_contra_arguments=3,
-                k_best_arguments_per_iteration=[1, 1],
-                max_iterations=1,
+                k_best_arguments_per_iteration=[5, 4],
+                max_iterations=2,
             ),
         )
 

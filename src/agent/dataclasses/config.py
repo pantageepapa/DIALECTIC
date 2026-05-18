@@ -7,8 +7,8 @@ class Config(BaseModel):
     n_pro_arguments: int = 5
     n_contra_arguments: int = 5
     k_best_arguments_per_iteration: list[int] = Field(
-        default_factory=lambda: [5, 3]
-    )  # Different k for each iteration
+        default_factory=lambda: [5, 4]
+    )  # Different k for each iteration — tuned via Earlybird sweep
     max_iterations: int = 2
 
     def get_k_best_for_iteration(self, iteration: int) -> int:

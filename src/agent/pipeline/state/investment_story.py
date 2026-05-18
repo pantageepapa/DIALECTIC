@@ -31,7 +31,7 @@ class InputState(BaseModel):
     config: Config = Config(
         n_pro_arguments=3,
         n_contra_arguments=3,
-        k_best_arguments_per_iteration=[3, 1],
+        k_best_arguments_per_iteration=[5, 4],
         max_iterations=2,
     )
 
@@ -61,7 +61,7 @@ class IterativeInvestmentStoryState(BaseModel):
     config: Config = Config(
         n_pro_arguments=3,
         n_contra_arguments=3,
-        k_best_arguments_per_iteration=[3, 1],
+        k_best_arguments_per_iteration=[5, 4],
         max_iterations=2,
     )
     # Question trees for all 4 aspects (built during decomposition stage)
